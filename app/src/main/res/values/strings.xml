@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">ReservationApp Demo</string>
+    
+    <string name="login_email">Email</string>
+    <string name="login_pass">Password</string>
+    <string name="login_button">Login</string>
 </resources>
