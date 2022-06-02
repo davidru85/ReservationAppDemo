@@ -1,6 +1,5 @@
 package com.ruizurraca.reservationappdemo.login.data.repository
 
-import android.util.Log
 import com.ruizurraca.reservationappdemo.login.data.api.AimharderLoginApi
 import com.ruizurraca.reservationappdemo.login.data.models.LoginModelApi
 import com.ruizurraca.reservationappdemo.login.data.models.LoginResult
@@ -19,7 +18,7 @@ class LoginRepositoryImpl @Inject constructor(private val aimharderLoginApi: Aim
     }
 
     override suspend fun login(loginModelApi: LoginModelApi): LoginResult {
-        val json = LoginModelApi(mail = "mail@mail.com", pw = "wtf")
+        val json = getLoginModelApiFake(false)
         val response = aimharderLoginApi.login(
             getLoginHeaders(),
             json.login,
@@ -28,22 +27,26 @@ class LoginRepositoryImpl @Inject constructor(private val aimharderLoginApi: Aim
             json.pw
         )
         response.body()?.let { body ->
-            return LoginResult(manageDoc((Jsoup.parse(body))), getCookies(response))
+            val loginResult = LoginResult(successCookies = getCookies(response))
+            manageDoc(Jsoup.parse(body))?.let {
+                loginResult.errorString = it
+                loginResult.successCookies = null
+            }
+            return loginResult
         }
-        return LoginResult(false, getCookies(response))
+        return LoginResult("Error")
     }
 
     private fun getCookies(response: Response<String>) = response.headers().values("Set-Cookie")
 
-    private fun manageDoc(doc: Document): Boolean {
-        var loginSuccess = true
+    private fun manageDoc(doc: Document): String? {
+        var error: String? = null
         doc.forEach {
             if (it.id() == "loginErrors") {
-                loginSuccess = false
-                Log.d(TAG, "manageDoc: ${it.text()}")
+                error = it.text()
             }
         }
-        return loginSuccess
+        return error
     }
 
     private fun getLoginHeaders(): Map<String, String> {
@@ -61,6 +64,14 @@ class LoginRepositoryImpl @Inject constructor(private val aimharderLoginApi: Aim
         header["host"] = "aimharder.com"
 
         return header
+    }
+
+    private fun getLoginModelApiFake(correct: Boolean): LoginModelApi {
+        return if (correct) {
+            LoginModelApi(mail = "davidru85@gmail.com", pw = "8SoHiKHRpNJUrezEPC63")
+        } else {
+            LoginModelApi(mail = "mail@mail.com", pw = "wtf")
+        }
     }
 
 }
