@@ -18,6 +18,8 @@ android {
     testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
     buildConfigField "String", "BASE_LOGIN_URL", "\"https://aimharder.com/\""
+    buildConfigField "String", "BASE_BOX_URL", "\"https://crossfitbigrhino.aimharder.com/\""
+    buildConfigField "String", "BOX_ID", "\"9224\""
   }
 
   buildTypes {

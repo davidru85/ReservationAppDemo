@@ -9,6 +9,10 @@ import androidx.core.widget.doAfterTextChanged
 import com.google.gson.Gson
 import com.ruizurraca.reservationappdemo.classes.presentation.ClassesActivity
 import com.ruizurraca.reservationappdemo.databinding.ActivityLoginBinding
+import com.ruizurraca.reservationappdemo.extensions.COOKIES
+import com.ruizurraca.reservationappdemo.extensions.Prefs
+import com.ruizurraca.reservationappdemo.extensions.putAny
+import com.ruizurraca.reservationappdemo.extensions.remove
 import com.ruizurraca.reservationappdemo.login.data.models.LoginResult
 import com.ruizurraca.reservationappdemo.login.presentation.models.LoginModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -46,15 +50,13 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun loginSuccess(successCookies: List<String>) {
-        applicationContext.getSharedPreferences("prefs", 0).let {
-            it.edit().apply {
-                putString("cookies", Gson().toJson(successCookies))
-            }.apply()
-        }
+        Prefs.putAny(COOKIES, Gson().toJson(successCookies))
+
         startActivity(Intent(this, ClassesActivity::class.java))
     }
 
     private fun loginFailed(errorString: String?) {
+        Prefs.remove(COOKIES)
         Log.d(TAG, "loginFailed: $errorString")
     }
 

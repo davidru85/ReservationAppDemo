@@ -1,6 +1,9 @@
-package com.ruizurraca.reservationappdemo.login.di
+package com.ruizurraca.reservationappdemo.classes.di
 
 import com.ruizurraca.reservationappdemo.BuildConfig
+import com.ruizurraca.reservationappdemo.classes.data.api.AimharderClassesApi
+import com.ruizurraca.reservationappdemo.classes.data.repository.ClassesRepositoryImpl
+import com.ruizurraca.reservationappdemo.classes.domain.repository.ClassesRepository
 import com.ruizurraca.reservationappdemo.login.data.api.AimharderLoginApi
 import com.ruizurraca.reservationappdemo.login.data.repository.LoginRepositoryImpl
 import com.ruizurraca.reservationappdemo.login.domain.repository.LoginRepository
@@ -11,17 +14,18 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object LoginModule {
+object ClassesModule {
 
     @Singleton
     @Provides
-    @Named("interceptorLogin")
+    @Named("interceptorClasses")
     fun providesHttpLoggingInterceptor() = HttpLoggingInterceptor()
         .apply {
             level = HttpLoggingInterceptor.Level.BODY
@@ -29,8 +33,8 @@ object LoginModule {
 
     @Singleton
     @Provides
-    @Named("okHttpLogin")
-    fun providesOkHttpClient(@Named("interceptorLogin") httpLoggingInterceptor: HttpLoggingInterceptor): OkHttpClient =
+    @Named("okHttpClasses")
+    fun providesOkHttpClient(@Named("interceptorClasses") httpLoggingInterceptor: HttpLoggingInterceptor): OkHttpClient =
         OkHttpClient
             .Builder()
             .addInterceptor(httpLoggingInterceptor)
@@ -38,22 +42,22 @@ object LoginModule {
 
     @Singleton
     @Provides
-    @Named("retrofitLogin")
-    fun provideRetrofit(@Named("okHttpLogin") okHttpClient: OkHttpClient): Retrofit =
+    @Named("retrofitClasses")
+    fun provideRetrofit(@Named("okHttpClasses") okHttpClient: OkHttpClient): Retrofit =
         Retrofit.Builder()
-            .addConverterFactory(ScalarsConverterFactory.create())
-            .baseUrl(BuildConfig.BASE_LOGIN_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .baseUrl(BuildConfig.BASE_BOX_URL)
             .client(okHttpClient)
             .build()
 
     @Singleton
     @Provides
-    @Named("aimharderApiLogin")
-    fun provideAimharderLoginApi(@Named("retrofitLogin") retrofit: Retrofit): AimharderLoginApi =
-        retrofit.create(AimharderLoginApi::class.java)
+    @Named("aimharderApiClasses")
+    fun provideAimharderLoginApi(@Named("retrofitClasses") retrofit: Retrofit): AimharderClassesApi =
+        retrofit.create(AimharderClassesApi::class.java)
 
     @Singleton
     @Provides
-    fun provideLoginRepository(@Named("aimharderApiLogin") aimharderLoginApi: AimharderLoginApi): LoginRepository =
-        LoginRepositoryImpl(aimharderLoginApi)
+    fun provideLoginRepository(@Named("aimharderApiClasses") aimharderClassesApi: AimharderClassesApi): ClassesRepository =
+        ClassesRepositoryImpl(aimharderClassesApi)
 }

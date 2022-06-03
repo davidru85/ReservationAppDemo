@@ -26,7 +26,7 @@ class LoginRepositoryImpl @Inject constructor(private val aimharderLoginApi: Aim
             json.mail,
             json.pw
         )
-        response.body()?.let { body ->
+        /*response.body()?.let { body ->
             val loginResult = LoginResult(successCookies = getCookies(response))
             manageDoc(Jsoup.parse(body))?.let {
                 loginResult.errorString = it
@@ -34,7 +34,8 @@ class LoginRepositoryImpl @Inject constructor(private val aimharderLoginApi: Aim
             }
             return loginResult
         }
-        return LoginResult("Error")
+        return LoginResult("Error")*/
+        return LoginResult(successCookies = getCookies(response))
     }
 
     private fun getCookies(response: Response<String>) = response.headers().values("Set-Cookie")
