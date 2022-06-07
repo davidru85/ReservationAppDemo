@@ -6,13 +6,11 @@ import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
-import com.google.gson.Gson
 import com.ruizurraca.reservationappdemo.classes.presentation.ClassesActivity
+import com.ruizurraca.reservationappdemo.common.COOKIES
+import com.ruizurraca.reservationappdemo.common.Prefs
+import com.ruizurraca.reservationappdemo.common.remove
 import com.ruizurraca.reservationappdemo.databinding.ActivityLoginBinding
-import com.ruizurraca.reservationappdemo.extensions.COOKIES
-import com.ruizurraca.reservationappdemo.extensions.Prefs
-import com.ruizurraca.reservationappdemo.extensions.putAny
-import com.ruizurraca.reservationappdemo.extensions.remove
 import com.ruizurraca.reservationappdemo.login.data.models.LoginResult
 import com.ruizurraca.reservationappdemo.login.presentation.models.LoginModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -40,20 +38,16 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun manageLoginResult(loginResult: LoginResult) {
-        if (loginResult.successCookies != null) {
-            loginResult.successCookies?.let {
-                loginSuccess(it)
-            }
-        } else {
+        if (loginResult.errorString?.isNotEmpty() == true) {
             loginFailed(loginResult.errorString)
+        } else {
+            loginSuccess()
         }
     }
 
-    private fun loginSuccess(successCookies: List<String>) {
-        Prefs.putAny(COOKIES, Gson().toJson(successCookies))
-
+    private fun loginSuccess() =
         startActivity(Intent(this, ClassesActivity::class.java))
-    }
+
 
     private fun loginFailed(errorString: String?) {
         Prefs.remove(COOKIES)

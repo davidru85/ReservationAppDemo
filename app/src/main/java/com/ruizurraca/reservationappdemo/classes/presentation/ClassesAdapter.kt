@@ -1,6 +1,7 @@
 package com.ruizurraca.reservationappdemo.classes.presentation
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -8,6 +9,10 @@ import com.ruizurraca.reservationappdemo.classes.data.models.Bookings
 import com.ruizurraca.reservationappdemo.databinding.ItemClassBinding
 
 class ClassesAdapter : RecyclerView.Adapter<ClassesAdapter.ClassHolder>() {
+
+    companion object {
+        const val TAG = "ClassesAdapter"
+    }
 
     var listener: ClassClickListener? = null
     private var bookings = mutableListOf<Bookings>()
@@ -45,10 +50,12 @@ class ClassesAdapter : RecyclerView.Adapter<ClassesAdapter.ClassHolder>() {
     ) : RecyclerView.ViewHolder(itemClassBinding.root) {
         private val binding = itemClassBinding
         fun bind(currentClass: Bookings) {
+            Log.d(TAG, "bind: $currentClass")
             binding.clCurrentClass.setOnClickListener {
                 listener?.classClick(currentClass)
             }
-            binding.name.text = "${currentClass.className} ${currentClass.time}"
+            binding.tvTime.text = "${currentClass.time}"
+            binding.tvName.text = "${currentClass.className}"
         }
     }
 }

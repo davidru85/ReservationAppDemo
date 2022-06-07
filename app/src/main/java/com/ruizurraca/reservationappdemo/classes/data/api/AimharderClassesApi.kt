@@ -8,9 +8,17 @@ import retrofit2.http.*
 interface AimharderClassesApi {
     @GET("/api/bookings")
     suspend fun getClasses(
-        @HeaderMap headers: Map<String, String>,
         @Query("day") day: String,
         @Query("box") box: String,
-        @Query("familyId") familyId: String
+        @Query("familyId") familyId: String = ""
+    ): Response<ClassesResponse>
+
+    @FormUrlEncoded
+    @POST("/api/book")
+    suspend fun bookClass(
+        @Field("id") id: String,
+        @Field("day") day: String,
+        @Field("insist") insist: Int = 0,
+        @Field("familyId") familyId: String = ""
     ): Response<ClassesResponse>
 }

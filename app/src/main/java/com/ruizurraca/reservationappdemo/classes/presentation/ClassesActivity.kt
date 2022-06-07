@@ -5,19 +5,21 @@ import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.ruizurraca.reservationappdemo.BuildConfig
 import com.ruizurraca.reservationappdemo.classes.data.models.Bookings
 import com.ruizurraca.reservationappdemo.databinding.ActivityClassesBinding
-import com.ruizurraca.reservationappdemo.extensions.COOKIES
-import com.ruizurraca.reservationappdemo.extensions.Prefs
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @AndroidEntryPoint
 class ClassesActivity : AppCompatActivity() {
+
+    companion object {
+        const val TAG = "ClassesActivity"
+    }
+
+    var currentDate = LocalDate.now()?.plusDays(4)?.format((DateTimeFormatter.BASIC_ISO_DATE))
 
     private lateinit var binding: ActivityClassesBinding
     private val viewModel by viewModels<ClassesViewModel>()
@@ -30,11 +32,9 @@ class ClassesActivity : AppCompatActivity() {
     }
 
     private fun bookClass(currentClass: Bookings) {
-        Log.d(TAG, "bookClass: $currentClass")
-    }
-
-    companion object {
-        val TAG = "ClassesActivity"
+        currentDate?.let { targetDay ->
+            viewModel.bookClass(targetDay, currentClass)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,19 +67,8 @@ class ClassesActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        val cookies = getCookies()
-        LocalDate.now()?.plusDays(4)?.format((DateTimeFormatter.BASIC_ISO_DATE))?.let { targetDay ->
-            viewModel.getClasses(BuildConfig.BOX_ID, targetDay, cookies)
+        currentDate?.let { targetDay ->
+            viewModel.getClasses(BuildConfig.BOX_ID, targetDay)
         }
-    }
-
-    private fun getCookies(): List<String>? =
-        Prefs.getString(COOKIES, null)?.let {
-            deserializeCookies(it)
-        }
-
-    private fun deserializeCookies(itemListJsonString: String): List<String> {
-        val itemType = object : TypeToken<List<String>>() {}.type
-        return Gson().fromJson(itemListJsonString, itemType)
     }
 }

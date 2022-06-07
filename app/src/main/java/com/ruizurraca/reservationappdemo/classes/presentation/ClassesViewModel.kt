@@ -3,6 +3,7 @@ package com.ruizurraca.reservationappdemo.classes.presentation
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ruizurraca.reservationappdemo.classes.data.models.Bookings
 import com.ruizurraca.reservationappdemo.classes.data.models.ClassesResponse
 import com.ruizurraca.reservationappdemo.classes.domain.repository.ClassesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,10 +21,19 @@ class ClassesViewModel @Inject constructor(private val classesRepository: Classe
             return classesLiveData
         }
 
-    fun getClasses(boxId: String, date: String, cookies: List<String>?) {
+    fun getClasses(boxId: String, date: String) {
         viewModelScope.launch {
-            classesRepository.getClasses(boxId, date, cookies)
+            classesRepository.getClasses(boxId, date)
                 .let { classesLiveData.postValue(it) }
+        }
+    }
+
+    fun bookClass(currentDate: String, currentClass: Bookings) {
+        viewModelScope.launch {
+            currentClass.id?.let { classId ->
+                classesRepository.bookClass(classId, currentDate)
+                    .let { classesLiveData.postValue(it) }
+            }
         }
     }
 }

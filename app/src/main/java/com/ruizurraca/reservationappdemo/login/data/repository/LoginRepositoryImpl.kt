@@ -18,7 +18,7 @@ class LoginRepositoryImpl @Inject constructor(private val aimharderLoginApi: Aim
     }
 
     override suspend fun login(loginModelApi: LoginModelApi): LoginResult {
-        val json = getLoginModelApiFake(false)
+        val json = getLoginModelApiFake(true)
         val response = aimharderLoginApi.login(
             getLoginHeaders(),
             json.login,
@@ -26,19 +26,16 @@ class LoginRepositoryImpl @Inject constructor(private val aimharderLoginApi: Aim
             json.mail,
             json.pw
         )
-        /*response.body()?.let { body ->
-            val loginResult = LoginResult(successCookies = getCookies(response))
+        response.body()?.let { body ->
+            val loginResult = LoginResult()
             manageDoc(Jsoup.parse(body))?.let {
                 loginResult.errorString = it
-                loginResult.successCookies = null
             }
             return loginResult
         }
-        return LoginResult("Error")*/
-        return LoginResult(successCookies = getCookies(response))
+        return LoginResult("Error")
+        //return LoginResult(successCookies = getCookies(response))
     }
-
-    private fun getCookies(response: Response<String>) = response.headers().values("Set-Cookie")
 
     private fun manageDoc(doc: Document): String? {
         var error: String? = null

@@ -1,6 +1,7 @@
 package com.ruizurraca.reservationappdemo.login.di
 
 import com.ruizurraca.reservationappdemo.BuildConfig
+import com.ruizurraca.reservationappdemo.common.CustomCookieJar
 import com.ruizurraca.reservationappdemo.login.data.api.AimharderLoginApi
 import com.ruizurraca.reservationappdemo.login.data.repository.LoginRepositoryImpl
 import com.ruizurraca.reservationappdemo.login.domain.repository.LoginRepository
@@ -30,9 +31,13 @@ object LoginModule {
     @Singleton
     @Provides
     @Named("okHttpLogin")
-    fun providesOkHttpClient(@Named("interceptorLogin") httpLoggingInterceptor: HttpLoggingInterceptor): OkHttpClient =
+    fun providesOkHttpClient(
+        @Named("interceptorLogin") httpLoggingInterceptor: HttpLoggingInterceptor,
+        @Named("commonCookieJar") customCookieJar: CustomCookieJar
+    ): OkHttpClient =
         OkHttpClient
             .Builder()
+            .cookieJar(customCookieJar)
             .addInterceptor(httpLoggingInterceptor)
             .build()
 

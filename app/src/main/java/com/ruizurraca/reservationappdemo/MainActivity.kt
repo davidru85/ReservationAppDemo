@@ -4,8 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.ruizurraca.reservationappdemo.classes.presentation.ClassesActivity
-import com.ruizurraca.reservationappdemo.extensions.COOKIES
-import com.ruizurraca.reservationappdemo.extensions.Prefs
+import com.ruizurraca.reservationappdemo.common.COOKIES
+import com.ruizurraca.reservationappdemo.common.Prefs
 import com.ruizurraca.reservationappdemo.login.presentation.LoginActivity
 
 class MainActivity : AppCompatActivity() {

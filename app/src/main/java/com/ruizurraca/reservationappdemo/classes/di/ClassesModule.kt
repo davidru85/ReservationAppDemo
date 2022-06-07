@@ -4,9 +4,7 @@ import com.ruizurraca.reservationappdemo.BuildConfig
 import com.ruizurraca.reservationappdemo.classes.data.api.AimharderClassesApi
 import com.ruizurraca.reservationappdemo.classes.data.repository.ClassesRepositoryImpl
 import com.ruizurraca.reservationappdemo.classes.domain.repository.ClassesRepository
-import com.ruizurraca.reservationappdemo.login.data.api.AimharderLoginApi
-import com.ruizurraca.reservationappdemo.login.data.repository.LoginRepositoryImpl
-import com.ruizurraca.reservationappdemo.login.domain.repository.LoginRepository
+import com.ruizurraca.reservationappdemo.common.CustomCookieJar
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,7 +13,6 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.converter.scalars.ScalarsConverterFactory
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -34,9 +31,13 @@ object ClassesModule {
     @Singleton
     @Provides
     @Named("okHttpClasses")
-    fun providesOkHttpClient(@Named("interceptorClasses") httpLoggingInterceptor: HttpLoggingInterceptor): OkHttpClient =
+    fun providesOkHttpClient(
+        @Named("interceptorClasses") httpLoggingInterceptor: HttpLoggingInterceptor,
+        @Named("commonCookieJar") customCookieJar: CustomCookieJar
+    ): OkHttpClient =
         OkHttpClient
             .Builder()
+            .cookieJar(customCookieJar)
             .addInterceptor(httpLoggingInterceptor)
             .build()
 

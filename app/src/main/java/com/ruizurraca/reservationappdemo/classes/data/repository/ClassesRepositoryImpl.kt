@@ -14,10 +14,11 @@ class ClassesRepositoryImpl @Inject constructor(private val aimharderClassesApi:
         const val TAG = "ClassesRepositoryImpl"
     }
 
-    override suspend fun getClasses(boxId: String, date: String, cookies: List<String>?): ClassesResponse? {
-        Log.d(TAG, "getClasses: ${getHeaders(cookies)}")
+    override suspend fun getClasses(
+        boxId: String,
+        date: String
+    ): ClassesResponse? {
         val response = aimharderClassesApi.getClasses(
-            headers = getHeaders(cookies),
             day = date,
             box = boxId,
             familyId = ""
@@ -26,13 +27,17 @@ class ClassesRepositoryImpl @Inject constructor(private val aimharderClassesApi:
         return response.body()
     }
 
-    private fun getHeaders(cookies: List<String>?): Map<String, String> {
-        return mutableMapOf<String, String>().apply {
-            cookies?.forEach { cookie ->
-
-                val splittedCookie = cookie.split("=", limit = 2)
-                this[splittedCookie.get(0)] = splittedCookie.get(1)
-            }
-        }
+    override suspend fun bookClass(
+        classId: String,
+        date: String
+    ): ClassesResponse? {
+        val response = aimharderClassesApi.bookClass(
+            id = classId,
+            day = date,
+            insist = 0,
+            familyId = ""
+        )
+        Log.d(TAG, "bookClass: $response")
+        return response.body()
     }
 }

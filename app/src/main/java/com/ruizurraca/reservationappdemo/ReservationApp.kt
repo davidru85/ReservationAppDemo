@@ -1,7 +1,7 @@
 package com.ruizurraca.reservationappdemo
 
 import android.app.Application
-import com.ruizurraca.reservationappdemo.extensions.Prefs
+import com.ruizurraca.reservationappdemo.common.Prefs
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
