@@ -59,6 +59,10 @@ class ClassesActivity : AppCompatActivity() {
                 showClasses(classes)
             }
         })
+
+        viewModel.bookClass.observe(this, {
+            Log.d(TAG, "initObservers: $it")
+        })
     }
 
     private fun showClasses(classes: List<Bookings>) {

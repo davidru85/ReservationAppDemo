@@ -1,6 +1,7 @@
 package com.ruizurraca.reservationappdemo.classes.data.api
 
 
+import com.ruizurraca.reservationappdemo.classes.data.models.BookClassResponse
 import com.ruizurraca.reservationappdemo.classes.data.models.ClassesResponse
 import retrofit2.Response
 import retrofit2.http.*
@@ -20,5 +21,5 @@ interface AimharderClassesApi {
         @Field("day") day: String,
         @Field("insist") insist: Int = 0,
         @Field("familyId") familyId: String = ""
-    ): Response<ClassesResponse>
+    ): Response<BookClassResponse>
 }

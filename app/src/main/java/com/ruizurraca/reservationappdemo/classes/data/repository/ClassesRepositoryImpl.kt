@@ -2,6 +2,7 @@ package com.ruizurraca.reservationappdemo.classes.data.repository
 
 import android.util.Log
 import com.ruizurraca.reservationappdemo.classes.data.api.AimharderClassesApi
+import com.ruizurraca.reservationappdemo.classes.data.models.BookClassResponse
 import com.ruizurraca.reservationappdemo.classes.data.models.ClassesResponse
 import com.ruizurraca.reservationappdemo.classes.domain.repository.ClassesRepository
 import javax.inject.Inject
@@ -30,7 +31,7 @@ class ClassesRepositoryImpl @Inject constructor(private val aimharderClassesApi:
     override suspend fun bookClass(
         classId: String,
         date: String
-    ): ClassesResponse? {
+    ): BookClassResponse? {
         val response = aimharderClassesApi.bookClass(
             id = classId,
             day = date,
