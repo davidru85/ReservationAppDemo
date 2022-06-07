@@ -6,8 +6,8 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ruizurraca.reservationappdemo.BuildConfig
-import com.ruizurraca.reservationappdemo.classes.data.models.BookClassResponse
-import com.ruizurraca.reservationappdemo.classes.data.models.Bookings
+import com.ruizurraca.reservationappdemo.classes.presentation.models.BookClassModel
+import com.ruizurraca.reservationappdemo.classes.presentation.models.BookingsModel
 import com.ruizurraca.reservationappdemo.databinding.ActivityClassesBinding
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDate
@@ -26,13 +26,13 @@ class ClassesActivity : AppCompatActivity() {
     private val viewModel by viewModels<ClassesViewModel>()
     private val classesAdapter = ClassesAdapter().apply {
         listener = object : ClassClickListener {
-            override fun classClick(currentClass: Bookings) {
+            override fun classClick(currentClass: BookingsModel) {
                 bookClass(currentClass)
             }
         }
     }
 
-    private fun bookClass(currentClass: Bookings) {
+    private fun bookClass(currentClass: BookingsModel) {
         currentDate?.let { targetDay ->
             viewModel.bookClass(targetDay.format((DateTimeFormatter.BASIC_ISO_DATE)), currentClass)
         }
@@ -77,18 +77,23 @@ class ClassesActivity : AppCompatActivity() {
         })
 
         viewModel.bookClass.observe(this, { response ->
-            response?.let { bookClassResponse ->
+            response.bookClassDtoResponse?.let { bookClassResponse ->
                 manageBookClassResponse(bookClassResponse)
             }
         })
     }
 
-    private fun manageBookClassResponse(bookClassResponse: BookClassResponse) {
-        val message: String = bookClassResponse.errorMssg ?: "Success"
+    private fun manageBookClassResponse(bookClassResponse: BookClassModel.BookClassDtoResponse) {
+        val message = if (bookClassResponse.errorMssg?.isNotEmpty() == true) {
+            bookClassResponse.errorMssg
+        } else {
+            "Success"
+        }
+
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
-    private fun showClasses(classes: List<Bookings>) {
+    private fun showClasses(classes: List<BookingsModel>) {
         classesAdapter.fillData(classes)
     }
 

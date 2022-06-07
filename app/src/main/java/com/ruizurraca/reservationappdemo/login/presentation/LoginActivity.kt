@@ -7,12 +7,13 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
 import com.ruizurraca.reservationappdemo.classes.presentation.ClassesActivity
-import com.ruizurraca.reservationappdemo.common.COOKIES
 import com.ruizurraca.reservationappdemo.common.Prefs
-import com.ruizurraca.reservationappdemo.common.remove
+import com.ruizurraca.reservationappdemo.common.deleteCookies
+import com.ruizurraca.reservationappdemo.common.deleteCredentials
+import com.ruizurraca.reservationappdemo.common.saveCredentials
 import com.ruizurraca.reservationappdemo.databinding.ActivityLoginBinding
-import com.ruizurraca.reservationappdemo.login.data.models.LoginResult
 import com.ruizurraca.reservationappdemo.login.presentation.models.LoginModel
+import com.ruizurraca.reservationappdemo.login.presentation.models.LoginResult
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -41,16 +42,19 @@ class LoginActivity : AppCompatActivity() {
         if (loginResult.errorString?.isNotEmpty() == true) {
             loginFailed(loginResult.errorString)
         } else {
-            loginSuccess()
+            loginSuccess(loginResult)
         }
     }
 
-    private fun loginSuccess() =
+    private fun loginSuccess(loginResult: LoginResult) {
+        Prefs.saveCredentials(loginResult.loginModel)
         startActivity(Intent(this, ClassesActivity::class.java))
+    }
 
 
     private fun loginFailed(errorString: String?) {
-        Prefs.remove(COOKIES)
+        Prefs.deleteCookies()
+        Prefs.deleteCredentials()
         Log.d(TAG, "loginFailed: $errorString")
     }
 

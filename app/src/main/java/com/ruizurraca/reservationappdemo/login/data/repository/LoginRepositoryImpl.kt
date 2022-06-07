@@ -2,11 +2,11 @@ package com.ruizurraca.reservationappdemo.login.data.repository
 
 import com.ruizurraca.reservationappdemo.login.data.api.AimharderLoginApi
 import com.ruizurraca.reservationappdemo.login.data.models.LoginModelApi
-import com.ruizurraca.reservationappdemo.login.data.models.LoginResult
 import com.ruizurraca.reservationappdemo.login.domain.repository.LoginRepository
+import com.ruizurraca.reservationappdemo.login.presentation.models.LoginModel
+import com.ruizurraca.reservationappdemo.login.presentation.models.LoginResult
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import retrofit2.Response
 import javax.inject.Inject
 
 
@@ -27,14 +27,14 @@ class LoginRepositoryImpl @Inject constructor(private val aimharderLoginApi: Aim
             json.pw
         )
         response.body()?.let { body ->
-            val loginResult = LoginResult()
+            val loginResult = LoginResult(loginModel = LoginModel.fromDTO(loginModelApi))
             manageDoc(Jsoup.parse(body))?.let {
                 loginResult.errorString = it
             }
             return loginResult
         }
-        return LoginResult("Error")
-        //return LoginResult(successCookies = getCookies(response))
+        return LoginResult("Error", loginModel = LoginModel.fromDTO(loginModelApi))
+        //return LoginResult(loginModel=LoginModel.fromDTO(loginModelApi))
     }
 
     private fun manageDoc(doc: Document): String? {

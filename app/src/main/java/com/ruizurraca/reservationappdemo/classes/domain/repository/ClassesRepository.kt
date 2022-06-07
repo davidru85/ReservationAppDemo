@@ -2,9 +2,11 @@ package com.ruizurraca.reservationappdemo.classes.domain.repository
 
 import com.ruizurraca.reservationappdemo.classes.data.models.BookClassResponse
 import com.ruizurraca.reservationappdemo.classes.data.models.ClassesResponse
+import com.ruizurraca.reservationappdemo.classes.presentation.models.BookClassModel
+import com.ruizurraca.reservationappdemo.classes.presentation.models.ClassesResponseModel
 
 interface ClassesRepository {
-    suspend fun getClasses(boxId: String, date: String): ClassesResponse?
+    suspend fun getClasses(boxId: String, date: String): ClassesResponseModel
 
-    suspend fun bookClass(classId: String, date: String): BookClassResponse?
+    suspend fun bookClass(classId: String, date: String): BookClassModel
 }

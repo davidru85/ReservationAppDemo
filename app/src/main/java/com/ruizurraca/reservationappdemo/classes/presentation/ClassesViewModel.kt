@@ -3,10 +3,10 @@ package com.ruizurraca.reservationappdemo.classes.presentation
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ruizurraca.reservationappdemo.classes.data.models.BookClassResponse
-import com.ruizurraca.reservationappdemo.classes.data.models.Bookings
-import com.ruizurraca.reservationappdemo.classes.data.models.ClassesResponse
 import com.ruizurraca.reservationappdemo.classes.domain.repository.ClassesRepository
+import com.ruizurraca.reservationappdemo.classes.presentation.models.BookClassModel
+import com.ruizurraca.reservationappdemo.classes.presentation.models.BookingsModel
+import com.ruizurraca.reservationappdemo.classes.presentation.models.ClassesResponseModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -15,15 +15,15 @@ import javax.inject.Inject
 class ClassesViewModel @Inject constructor(private val classesRepository: ClassesRepository) :
     ViewModel() {
 
-    private val classesLiveData = MutableLiveData<ClassesResponse?>()
-    private val bookClassLiveData = MutableLiveData<BookClassResponse?>()
+    private val classesLiveData = MutableLiveData<ClassesResponseModel>()
+    private val bookClassLiveData = MutableLiveData<BookClassModel>()
 
-    val classes: MutableLiveData<ClassesResponse?>
+    val classes: MutableLiveData<ClassesResponseModel>
         get() {
             return classesLiveData
         }
 
-    val bookClass: MutableLiveData<BookClassResponse?>
+    val bookClass: MutableLiveData<BookClassModel>
         get() {
             return bookClassLiveData
         }
@@ -35,7 +35,7 @@ class ClassesViewModel @Inject constructor(private val classesRepository: Classe
         }
     }
 
-    fun bookClass(currentDate: String, currentClass: Bookings) {
+    fun bookClass(currentDate: String, currentClass: BookingsModel) {
         viewModelScope.launch {
             currentClass.id?.let { classId ->
                 classesRepository.bookClass(classId, currentDate)

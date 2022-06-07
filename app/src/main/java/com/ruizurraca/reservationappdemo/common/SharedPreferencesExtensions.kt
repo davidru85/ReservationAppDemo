@@ -32,6 +32,10 @@ fun SharedPreferences.saveCredentials(loginModel: LoginModel) {
     Prefs.putAny(CREDENTIALS, Gson().toJson(loginModel))
 }
 
+fun SharedPreferences.deleteCredentials() {
+    Prefs.remove(CREDENTIALS)
+}
+
 fun SharedPreferences.retrieveCredentials(): LoginModel {
     return try {
         Gson().fromJson(Prefs.getString(CREDENTIALS, ""), LoginModel::class.java)
@@ -45,6 +49,10 @@ fun SharedPreferences.retrieveCredentials(): LoginModel {
 
 fun SharedPreferences.saveCookies(cookies: List<Cookie>) {
     Prefs.putAny(COOKIES, Gson().toJson(cookies))
+}
+
+fun SharedPreferences.deleteCookies() {
+    Prefs.remove(COOKIES)
 }
 
 fun SharedPreferences.retrieveCookies(): List<Cookie> {

@@ -5,7 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.ruizurraca.reservationappdemo.classes.data.models.Bookings
+import com.ruizurraca.reservationappdemo.classes.presentation.models.BookingsModel
 import com.ruizurraca.reservationappdemo.databinding.ItemClassBinding
 
 class ClassesAdapter : RecyclerView.Adapter<ClassesAdapter.ClassHolder>() {
@@ -15,9 +15,9 @@ class ClassesAdapter : RecyclerView.Adapter<ClassesAdapter.ClassHolder>() {
     }
 
     var listener: ClassClickListener? = null
-    private var bookings = mutableListOf<Bookings>()
+    private var bookings = mutableListOf<BookingsModel>()
 
-    fun fillData(bookings: List<Bookings>) {
+    fun fillData(bookings: List<BookingsModel>) {
         this.bookings = bookings.toMutableList()
         notifyDataSetChanged()
     }
@@ -49,7 +49,7 @@ class ClassesAdapter : RecyclerView.Adapter<ClassesAdapter.ClassHolder>() {
         private val context: Context
     ) : RecyclerView.ViewHolder(itemClassBinding.root) {
         private val binding = itemClassBinding
-        fun bind(currentClass: Bookings) {
+        fun bind(currentClass: BookingsModel) {
             Log.d(TAG, "bind: $currentClass")
             binding.clCurrentClass.setOnClickListener {
                 listener?.classClick(currentClass)
@@ -61,5 +61,5 @@ class ClassesAdapter : RecyclerView.Adapter<ClassesAdapter.ClassHolder>() {
 }
 
 interface ClassClickListener {
-    fun classClick(currentClass: Bookings)
+    fun classClick(currentClass: BookingsModel)
 }
