@@ -1,11 +1,12 @@
 package com.ruizurraca.reservationappdemo.classes.presentation
 
 import android.os.Bundle
-import android.util.Log
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ruizurraca.reservationappdemo.BuildConfig
+import com.ruizurraca.reservationappdemo.classes.data.models.BookClassResponse
 import com.ruizurraca.reservationappdemo.classes.data.models.Bookings
 import com.ruizurraca.reservationappdemo.databinding.ActivityClassesBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -19,7 +20,7 @@ class ClassesActivity : AppCompatActivity() {
         const val TAG = "ClassesActivity"
     }
 
-    var currentDate = LocalDate.now()?.plusDays(4)?.format((DateTimeFormatter.BASIC_ISO_DATE))
+    var currentDate = LocalDate.now()?.plusDays(4)
 
     private lateinit var binding: ActivityClassesBinding
     private val viewModel by viewModels<ClassesViewModel>()
@@ -33,7 +34,7 @@ class ClassesActivity : AppCompatActivity() {
 
     private fun bookClass(currentClass: Bookings) {
         currentDate?.let { targetDay ->
-            viewModel.bookClass(targetDay, currentClass)
+            viewModel.bookClass(targetDay.format((DateTimeFormatter.BASIC_ISO_DATE)), currentClass)
         }
     }
 
@@ -50,19 +51,41 @@ class ClassesActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = classesAdapter
         }
+        binding.tvCurrentDate.apply {
+            text = currentDate?.format((DateTimeFormatter.ISO_DATE))
+            setOnClickListener { showDatePickerDialog() }
+        }
+    }
+
+    private fun showDatePickerDialog() {
+        val datePicker =
+            DatePickerFragment(currentDate) { day, month, year -> onDateSelected(day, month, year) }
+        datePicker.show(supportFragmentManager, "datePicker")
+    }
+
+    private fun onDateSelected(day: Int, month: Int, year: Int) {
+        currentDate = LocalDate.of(year, month, day)
+        binding.tvCurrentDate.text = currentDate?.format((DateTimeFormatter.ISO_DATE))
+        getClasses(currentDate)
     }
 
     private fun initObservers() {
         viewModel.classes.observe(this, {
-            Log.d(TAG, "initObservers: $it")
             it?.bookings?.let { classes ->
                 showClasses(classes)
             }
         })
 
-        viewModel.bookClass.observe(this, {
-            Log.d(TAG, "initObservers: $it")
+        viewModel.bookClass.observe(this, { response ->
+            response?.let { bookClassResponse ->
+                manageBookClassResponse(bookClassResponse)
+            }
         })
+    }
+
+    private fun manageBookClassResponse(bookClassResponse: BookClassResponse) {
+        val message: String = bookClassResponse.errorMssg ?: "Success"
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
     private fun showClasses(classes: List<Bookings>) {
@@ -71,8 +94,15 @@ class ClassesActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        currentDate?.let { targetDay ->
-            viewModel.getClasses(BuildConfig.BOX_ID, targetDay)
+        getClasses(currentDate)
+    }
+
+    private fun getClasses(localDate: LocalDate? = LocalDate.now()) {
+        localDate?.let { targetDay ->
+            viewModel.getClasses(
+                BuildConfig.BOX_ID,
+                targetDay.format((DateTimeFormatter.BASIC_ISO_DATE))
+            )
         }
     }
 }
