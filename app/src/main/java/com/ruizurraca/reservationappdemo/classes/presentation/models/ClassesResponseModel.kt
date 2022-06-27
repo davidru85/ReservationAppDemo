@@ -109,4 +109,6 @@ data class BookingsModel(
             )
 
     }
+
+    fun isBooked(): Boolean = bookState == "1"
 }

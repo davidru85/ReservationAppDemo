@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.ruizurraca.reservationappdemo.classes.presentation.models.BookingsModel
 import com.ruizurraca.reservationappdemo.databinding.ItemClassBinding
@@ -56,6 +57,7 @@ class ClassesAdapter : RecyclerView.Adapter<ClassesAdapter.ClassHolder>() {
             }
             binding.tvTime.text = "${currentClass.time}"
             binding.tvName.text = "${currentClass.className}"
+            binding.tvBooked.isVisible = currentClass.isBooked()
         }
     }
 }

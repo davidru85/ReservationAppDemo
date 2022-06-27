@@ -1,6 +1,7 @@
 package com.ruizurraca.reservationappdemo.classes.presentation
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -8,7 +9,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.ruizurraca.reservationappdemo.BuildConfig
 import com.ruizurraca.reservationappdemo.classes.presentation.models.BookClassModel
 import com.ruizurraca.reservationappdemo.classes.presentation.models.BookingsModel
+import com.ruizurraca.reservationappdemo.classes.presentation.models.ScheduledBookingModel
+import com.ruizurraca.reservationappdemo.common.Prefs
+import com.ruizurraca.reservationappdemo.common.dateToApi
+import com.ruizurraca.reservationappdemo.common.retrieveCredentials
 import com.ruizurraca.reservationappdemo.databinding.ActivityClassesBinding
+import com.ruizurraca.reservationappdemo.login.presentation.models.LoginModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -34,7 +40,7 @@ class ClassesActivity : AppCompatActivity() {
 
     private fun bookClass(currentClass: BookingsModel) {
         currentDate?.let { targetDay ->
-            viewModel.bookClass(targetDay.format((DateTimeFormatter.BASIC_ISO_DATE)), currentClass)
+            viewModel.bookClass(targetDay.dateToApi(), currentClass)
         }
     }
 
@@ -76,21 +82,36 @@ class ClassesActivity : AppCompatActivity() {
             }
         })
 
-        viewModel.bookClass.observe(this, { response ->
-            response.bookClassDtoResponse?.let { bookClassResponse ->
-                manageBookClassResponse(bookClassResponse)
-            }
+        viewModel.bookClass.observe(this, { bookClassModel ->
+            manageBookClassResponse(bookClassModel)
         })
     }
 
-    private fun manageBookClassResponse(bookClassResponse: BookClassModel.BookClassDtoResponse) {
-        val message = if (bookClassResponse.errorMssg?.isNotEmpty() == true) {
-            bookClassResponse.errorMssg
-        } else {
-            "Success"
+    private fun manageBookClassResponse(bookClassModel: BookClassModel) {
+        val message = when {
+            bookClassModel.bookClassDtoResponse?.bookState == -12 -> {
+                scheduleBooking(bookClassModel, Prefs.retrieveCredentials())
+                bookClassModel.bookClassDtoResponse.errorMssg ?: "Error"
+            }
+            bookClassModel.bookClassDtoResponse?.bookState == -8 -> {
+                "Error"
+            }
+            bookClassModel.bookClassDtoResponse?.errorMssg?.isNotEmpty() == true -> {
+                bookClassModel.bookClassDtoResponse.errorMssg
+            }
+            else -> {
+                "Success"
+            }
         }
 
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun scheduleBooking(bookClassModel: BookClassModel, credentials: LoginModel) {
+        ScheduledBookingModel.fromFailedRequest(bookClassModel, credentials)
+            ?.let {
+                Log.d(TAG, "scheduleBooking: $it")
+            }
     }
 
     private fun showClasses(classes: List<BookingsModel>) {
@@ -106,7 +127,7 @@ class ClassesActivity : AppCompatActivity() {
         localDate?.let { targetDay ->
             viewModel.getClasses(
                 BuildConfig.BOX_ID,
-                targetDay.format((DateTimeFormatter.BASIC_ISO_DATE))
+                targetDay.dateToApi()
             )
         }
     }

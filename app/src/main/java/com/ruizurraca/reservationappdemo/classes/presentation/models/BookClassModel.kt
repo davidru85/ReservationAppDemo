@@ -11,15 +11,17 @@ data class BookClassModel(
             dto: BookClassResponse?,
             id: String,
             day: String,
+            time: String? = null
         ): BookClassModel {
             return BookClassModel(
                 bookClassDtoResponse = BookClassDtoResponse.fromDTO(dto),
-                bookClassRequest = BookClassRequest(id = id, day = day)
+                bookClassRequest = BookClassRequest(id = id, day = day, time = time)
             )
         }
     }
 
-    data class BookClassRequest(val id: String, val day: String)
+    data class BookClassRequest(val id: String, val day: String, val time: String? = null)
+
     data class BookClassDtoResponse(
         var clasesContratadas: String? = null,
         var hasPublicMemberships: Int? = null,

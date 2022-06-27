@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">App Reservas Demo</string>
+    
+    <string name="login_email">Email</string>
+    <string name="login_pass">Contraseña</string>
+    <string name="login_button">Login</string>
+    
+    <string name="class_booked">Reservado</string>
+</resources>

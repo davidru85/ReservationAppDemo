@@ -38,7 +38,7 @@ class ClassesViewModel @Inject constructor(private val classesRepository: Classe
     fun bookClass(currentDate: String, currentClass: BookingsModel) {
         viewModelScope.launch {
             currentClass.id?.let { classId ->
-                classesRepository.bookClass(classId, currentDate)
+                classesRepository.bookClass(classId, currentDate, currentClass.time)
                     .let { bookClassLiveData.postValue(it) }
             }
         }

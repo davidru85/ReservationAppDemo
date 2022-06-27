@@ -25,6 +25,9 @@
         <activity
             android:name=".classes.presentation.ClassesActivity"
             android:exported="true" />
+        <activity
+            android:name=".box.presentation.BoxesActivity"
+            android:exported="true" />
     </application>
     
     <uses-permission android:name="android.permission.INTERNET" />

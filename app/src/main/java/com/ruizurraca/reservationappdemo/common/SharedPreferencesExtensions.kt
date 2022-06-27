@@ -3,6 +3,7 @@ package com.ruizurraca.reservationappdemo.common
 import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.ruizurraca.reservationappdemo.box.presentation.models.BoxResponseModel
 import com.ruizurraca.reservationappdemo.login.presentation.models.LoginModel
 import okhttp3.Cookie
 
@@ -10,6 +11,7 @@ lateinit var Prefs: SharedPreferences
 
 const val COOKIES = "COOKIES"
 const val CREDENTIALS = "CREDENTIALS"
+const val BOX = "BOX"
 
 // add entry in shared preference
 fun SharedPreferences.putAny(name: String, any: Any) {
@@ -41,6 +43,23 @@ fun SharedPreferences.retrieveCredentials(): LoginModel {
         Gson().fromJson(Prefs.getString(CREDENTIALS, ""), LoginModel::class.java)
     } catch (exc: Exception) {
         LoginModel()
+    }
+}
+
+// -------------------
+fun SharedPreferences.saveBox(boxResponseModel: BoxResponseModel) {
+    Prefs.putAny(BOX, Gson().toJson(boxResponseModel))
+}
+
+fun SharedPreferences.deleteBox() {
+    Prefs.remove(BOX)
+}
+
+fun SharedPreferences.retrieveBox(): BoxResponseModel {
+    return try {
+        Gson().fromJson(Prefs.getString(BOX, ""), BoxResponseModel::class.java)
+    } catch (exc: Exception) {
+        BoxResponseModel()
     }
 }
 

@@ -1,5 +1,7 @@
 package com.ruizurraca.reservationappdemo.login.data.repository
 
+import com.ruizurraca.reservationappdemo.common.Prefs
+import com.ruizurraca.reservationappdemo.common.saveCredentials
 import com.ruizurraca.reservationappdemo.login.data.api.AimharderLoginApi
 import com.ruizurraca.reservationappdemo.login.data.models.LoginModelApi
 import com.ruizurraca.reservationappdemo.login.domain.repository.LoginRepository
@@ -65,11 +67,13 @@ class LoginRepositoryImpl @Inject constructor(private val aimharderLoginApi: Aim
     }
 
     private fun getLoginModelApiFake(correct: Boolean): LoginModelApi {
-        return if (correct) {
+        val credentials = if (correct) {
             LoginModelApi(mail = "davidru85@gmail.com", pw = "8SoHiKHRpNJUrezEPC63")
         } else {
             LoginModelApi(mail = "mail@mail.com", pw = "wtf")
         }
+        Prefs.saveCredentials(LoginModel.fromDTO(credentials))
+        return credentials
     }
 
 }
