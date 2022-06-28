@@ -7,7 +7,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
 import com.ruizurraca.reservationappdemo.box.presentation.BoxesActivity
-import com.ruizurraca.reservationappdemo.classes.presentation.ClassesActivity
 import com.ruizurraca.reservationappdemo.common.Prefs
 import com.ruizurraca.reservationappdemo.common.deleteCookies
 import com.ruizurraca.reservationappdemo.common.deleteCredentials
@@ -49,7 +48,9 @@ class LoginActivity : AppCompatActivity() {
 
     private fun loginSuccess(loginResult: LoginResult) {
         Prefs.saveCredentials(loginResult.loginModel)
-        startActivity(Intent(this, BoxesActivity::class.java))
+        startActivity(Intent(this, BoxesActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+        })
     }
 
 

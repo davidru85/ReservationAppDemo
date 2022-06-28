@@ -20,13 +20,12 @@ class LoginRepositoryImpl @Inject constructor(private val aimharderLoginApi: Aim
     }
 
     override suspend fun login(loginModelApi: LoginModelApi): LoginResult {
-        val json = getLoginModelApiFake(true)
         val response = aimharderLoginApi.login(
             getLoginHeaders(),
-            json.login,
-            json.loginiframe,
-            json.mail,
-            json.pw
+            loginModelApi.login,
+            loginModelApi.loginiframe,
+            loginModelApi.mail,
+            loginModelApi.pw
         )
         response.body()?.let { body ->
             val loginResult = LoginResult(loginModel = LoginModel.fromDTO(loginModelApi))
@@ -36,7 +35,6 @@ class LoginRepositoryImpl @Inject constructor(private val aimharderLoginApi: Aim
             return loginResult
         }
         return LoginResult("Error", loginModel = LoginModel.fromDTO(loginModelApi))
-        //return LoginResult(loginModel=LoginModel.fromDTO(loginModelApi))
     }
 
     private fun manageDoc(doc: Document): String? {
@@ -65,15 +63,4 @@ class LoginRepositoryImpl @Inject constructor(private val aimharderLoginApi: Aim
 
         return header
     }
-
-    private fun getLoginModelApiFake(correct: Boolean): LoginModelApi {
-        val credentials = if (correct) {
-            LoginModelApi(mail = "davidru85@gmail.com", pw = "8SoHiKHRpNJUrezEPC63")
-        } else {
-            LoginModelApi(mail = "mail@mail.com", pw = "wtf")
-        }
-        Prefs.saveCredentials(LoginModel.fromDTO(credentials))
-        return credentials
-    }
-
 }
